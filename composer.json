@@ -1,0 +1,42 @@
+{
+    "name": "prasadchinwal/shibboleth",
+    "description": "Shibboleth OIDC driver for Laravel Socialite",
+    "type": "library",
+    "keywords": [
+        "Laravel", "Socialite", "Shibboleth", "Laravel Socialite Shibboleth Provider"
+    ],
+    "support": {
+        "issues": "https://github.com/PrasadChinwal/shibboleth/issues",
+        "source": "https://github.com/PrasadChinwal/shibboleth"
+    },
+    "authors": [
+        {
+            "name": "Chinwal, Prasad"
+        }
+    ],
+    "require": {
+        "illuminate/support": "^10.0",
+        "illuminate/filesystem": "^10.9"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "prasadchinwal\\shibboleth\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "prasadchinwal\\shibboleth\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "prasadchinwal\\shibboleth\\ShibbolethServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
