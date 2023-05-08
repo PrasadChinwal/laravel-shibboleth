@@ -1,6 +1,6 @@
 <?php
 
-namespace prasadchinwal\shibboleth\Saml;
+namespace PrasadChinwal\Shibboleth\Saml;
 
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Two\User;

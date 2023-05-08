@@ -1,6 +1,6 @@
 <?php
 
-namespace prasadchinwal\shibboleth\Saml;
+namespace PrasadChinwal\Shibboleth\Saml;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;

@@ -1,11 +1,12 @@
 <?php
 
-namespace prasadchinwal\shibboleth;
+namespace PrasadChinwal\Shibboleth;
+
 
 use Laravel\Socialite\SocialiteManager;
 use Laravel\Socialite\Two\AbstractProvider;
-use prasadchinwal\shibboleth\Oidc\ShibbolethOidcProvider;
-use prasadchinwal\shibboleth\Saml\ShibbolethSamlProvider;
+use PrasadChinwal\Shibboleth\Oidc\ShibbolethOidcProvider;
+use PrasadChinwal\Shibboleth\Saml\ShibbolethSamlProvider;
 
 class ShibbolethSocialiteManager extends SocialiteManager
 {
@@ -17,7 +18,6 @@ class ShibbolethSocialiteManager extends SocialiteManager
     public function createShibOidcDriver(): AbstractProvider
     {
         $config = $this->config->get('shibboleth.oidc');
-
         return $this->buildProvider(ShibbolethOidcProvider::class, $config);
     }
 

@@ -7,7 +7,7 @@ return [
      * Supported: saml, oidc
      */
 
-    'type' => 'oidc',
+    'type' => 'saml',
 
     /*
      * Set config required for Shibboleth OIDC authentication and authorization.

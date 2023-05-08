@@ -1,9 +1,9 @@
 <?php
 
-namespace prasadchinwal\shibboleth;
+namespace PrasadChinwal\Shibboleth;
 
 use Laravel\Socialite\SocialiteServiceProvider;
-use prasadchinwal\shibboleth\Console\ShibbolethInstall;
+use PrasadChinwal\Shibboleth\Console\ShibbolethInstall;
 
 class ShibbolethServiceProvider extends SocialiteServiceProvider
 {

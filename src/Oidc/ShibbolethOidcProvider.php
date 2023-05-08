@@ -1,6 +1,6 @@
 <?php
 
-namespace prasadchinwal\shibboleth\Oidc;
+namespace PrasadChinwal\Shibboleth\Oidc;
 
 use GuzzleHttp\RequestOptions;
 use Laravel\Socialite\Two\AbstractProvider;
@@ -102,10 +102,11 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     protected function mapUserToObject(array $user)
     {
         return (new User)->setRaw($user)->map([
-            'id' => $user['uisedu_uin'],
-            'name' => $user['preferred_username'],
+            'uin' => $user['uisedu_uin'],
+            'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
+            'full_name' => $user['given_name'].' '. $user['family_name'],
             'email' => $user['email'],
         ]);
     }

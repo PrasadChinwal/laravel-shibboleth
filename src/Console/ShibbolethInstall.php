@@ -1,6 +1,6 @@
 <?php
 
-namespace prasadchinwal\shibboleth\Console;
+namespace PrasadChinwal\Shibboleth\Console;
 
 use Illuminate\Console\Command;
 
