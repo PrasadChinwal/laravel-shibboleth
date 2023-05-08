@@ -42,7 +42,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('shibboleth.oidc.token_url', 'token-url');
         $app['config']->set('shibboleth.oidc.logout_url', 'logout-url');
         $app['config']->set('shibboleth.oidc.redirect', 'redirect');
-        $app['config']->set('shibboleth.oidc.scopes', ['email', 'family_name', 'itrust_uin', 'given_name', 'uisedu_is_member_of']);
+        $app['config']->set('shibboleth.oidc.scopes', ['openid', 'profile', 'email', 'phone', 'address', 'offline_access']);
 
         // Saml Config
         $app['config']->set('shibboleth.saml.auth_url', 'auth-url');

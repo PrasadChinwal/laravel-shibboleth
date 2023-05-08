@@ -60,7 +60,8 @@ final class ShibbolethSamlProvider extends AbstractSamlProvider implements Provi
             'last_name' => $user['sn'],
             'email' => $user['mail'],
             'netid' => $user['cn'],
-            'password' => Hash::make($user['iTrustUIN'].now())
+            'password' => Hash::make($user['iTrustUIN'].now()),
+            'groups' => $user['isMemberOf']
         ]);
     }
 

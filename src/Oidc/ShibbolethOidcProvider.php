@@ -3,6 +3,7 @@
 namespace PrasadChinwal\Shibboleth\Oidc;
 
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
@@ -34,6 +35,18 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      * @var bool
      */
     protected $usesPKCE = true;
+
+    /**
+     * Set the scopes
+     * @return array
+     */
+    public function getScopes()
+    {
+        if(empty(config('shibboleth.oidc.scopes'))) {
+            throw new \ValueError("Scopes not set in config file");
+        }
+        return array_unique((array) config('shibboleth.oidc.scopes'));
+    }
 
     /**
      * {@inheritdoc}
@@ -106,8 +119,10 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
             'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
-            'full_name' => $user['given_name'].' '. $user['family_name'],
+            'name' => $user['given_name'].' '. $user['family_name'],
             'email' => $user['email'],
+            'password' => Hash::make($user['uisedu_uin'].now()),
+            'groups' => $user['uisedu_is_member_of']
         ]);
     }
 }

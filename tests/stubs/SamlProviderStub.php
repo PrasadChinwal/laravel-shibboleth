@@ -54,7 +54,7 @@ class SamlProviderStub extends AbstractSamlProvider
     {
         return (new User)->setRaw($user)->map([
             'uin' => $user['iTrustUIN'],
-            'full_name' => $user['givenName'] . ' ' . $user['sn'],
+            'name' => $user['givenName'] . ' ' . $user['sn'],
             'first_name' => $user['givenName'],
             'last_name' => $user['sn'],
             'email' => $user['mail'],

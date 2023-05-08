@@ -27,6 +27,18 @@ class OidcProviderStub extends AbstractProvider
         'offline_access',
     ];
 
+    /**
+     * Set the scopes
+     * @return array
+     */
+    public function getScopes()
+    {
+        if (empty(config('shibboleth.oidc.scopes'))) {
+            throw new \ValueError('Scopes not set in config file');
+        }
+        return array_unique((array)config('shibboleth.oidc.scopes'));
+    }
+
     protected function getAuthUrl($state)
     {
         return $this->buildAuthUrlFromBase('http://auth.url', $state);
@@ -55,7 +67,7 @@ class OidcProviderStub extends AbstractProvider
             'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
-            'full_name' => $user['given_name'].' '. $user['family_name'],
+            'name' => $user['given_name'].' '. $user['family_name'],
             'email' => $user['email'],
         ]);
     }

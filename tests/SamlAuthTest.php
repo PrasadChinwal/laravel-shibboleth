@@ -31,7 +31,7 @@ test('successful authentication returns an instance of User', function() {
     $this->assertInstanceOf(User::class, $user);
     $this->assertSame('123456789', $user->uin);
     $this->assertSame('first last', $user->first_name .' '. $user->last_name);
-    $this->assertSame($user->full_name, $user->first_name .' '. $user->last_name);
+    $this->assertSame($user->name, $user->first_name .' '. $user->last_name);
     $this->assertSame('abc', $user->netid);
     $this->assertSame('abc@xxx.org', $user->netid.'@xxx.org');
     $this->assertSame($user->uin, $provider->user()->uin);
