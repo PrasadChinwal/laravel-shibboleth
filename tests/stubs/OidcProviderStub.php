@@ -2,6 +2,11 @@
 
 namespace PrasadChinwal\Shibboleth\Test\stubs;
 
+use GuzzleHttp\RequestOptions;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\User;
 use Mockery as m;
@@ -84,5 +89,29 @@ class OidcProviderStub extends AbstractProvider
         }
 
         return $this->http = m::mock(stdClass::class);
+    }
+
+    /**
+     * Logout currently authenticated User
+     *
+     * @return RedirectResponse
+     * @throws \Throwable
+     */
+    public function logout(): RedirectResponse
+    {
+        $user = Auth::user();
+        throw_if(!$user, AuthenticationException::class);
+        $logout_url = config('shibboleth.oidc.logout_url');
+        $response = $this->getHttpClient()->get($logout_url, [
+            RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $user->token],
+        ]);
+
+        if ($response->getStatusCode() === 200) {
+            Auth::logout();
+            Session::flush();
+            return new RedirectResponse(config('shibboleth.oidc.logout_url'));
+        }
+
+        throw new \Exception('Could not Logout User!');
     }
 }

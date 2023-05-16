@@ -4,8 +4,10 @@ namespace PrasadChinwal\Shibboleth\Saml;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
 
@@ -63,6 +65,19 @@ final class ShibbolethSamlProvider extends AbstractSamlProvider implements Provi
             'password' => Hash::make($user['iTrustUIN'].now()),
             'groups' => $user['isMemberOf']
         ]);
+    }
+
+    /**
+     * Logout currently authenticated User
+     *
+     * @return RedirectResponse
+     */
+    public function logout(): RedirectResponse
+    {
+        Auth::logout();
+        Session::flush();
+
+        return new RedirectResponse(config('shibboleth.oidc.logout_url'));
     }
 
 }

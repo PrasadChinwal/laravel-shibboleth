@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('netid')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('token', 600)->nullable();
+            $table->string('remember_token', 600)->nullable();
             $table->timestamps();
         });
     }

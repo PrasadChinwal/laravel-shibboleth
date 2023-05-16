@@ -3,7 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\Factory;
 use Laravel\Socialite\Two\User;
 use PrasadChinwal\Shibboleth\Test\stubs\OidcProviderStub;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;

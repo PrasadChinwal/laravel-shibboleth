@@ -18,6 +18,8 @@ return [
         'client_secret' => env('OIDC_CLIENT_SECRET'),
         'auth_url' => env('OIDC_AUTH_URL'),
         'token_url' => env('OIDC_TOKEN_URL'),
+        'user_url' => env('OIDC_USER_URL'),
+        'introspect_url' => env('OIDC_INTROSPECT_URL'),
         'logout_url' => env('OIDC_LOGOUT_URL'),
         'redirect' => env('APP_URL').'/auth/callback',
         'scopes' => ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'],

@@ -3,7 +3,11 @@
 namespace PrasadChinwal\Shibboleth\Oidc;
 
 use GuzzleHttp\RequestOptions;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
@@ -53,13 +57,12 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase(config('services.oidc.auth_url'), $state);
+        return $this->buildAuthUrlFromBase(config('shibboleth.oidc.auth_url'), $state);
     }
 
     public function getAccessTokenResponse($code)
     {
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
-            RequestOptions::HEADERS => ['Accept' => 'application/json'],
             RequestOptions::AUTH => [$this->clientId, $this->clientSecret],
             RequestOptions::FORM_PARAMS => $this->getTokenFields($code),
         ]);
@@ -72,7 +75,27 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getTokenUrl()
     {
-        return config('services.oidc.token_url');
+        return config('shibboleth.oidc.token_url');
+    }
+
+    /**
+     * Get the url to retrieve user by token
+     *
+     * @return string|null
+     */
+    protected function getUserUrl()
+    {
+        return config('shibboleth.oidc.user_url');
+    }
+
+    /**
+     * Get the url to introspect user token
+     *
+     * @return string|null
+     */
+    protected function getIntrospectUrl()
+    {
+        return config('shibboleth.oidc.introspect_url');
     }
 
     /**
@@ -80,7 +103,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get(config('services.oidc.user_url'), [
+        $response = $this->getHttpClient()->get($this->getUserUrl(), [
             RequestOptions::HEADERS => ['Authorization' => 'Bearer '.$token],
         ]);
 
@@ -124,5 +147,49 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
             'password' => Hash::make($user['uisedu_uin'].now()),
             'groups' => $user['uisedu_is_member_of']
         ]);
+    }
+
+    /**
+     * Introspect the user token
+     * @param $token
+     * @return array|mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function introspect($token): mixed
+    {
+        $response = $this->getHttpClient()->post(
+            $this->getIntrospectUrl(), [
+            RequestOptions::FORM_PARAMS => [
+                'token' => $token,
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret
+            ],
+        ]);
+
+        return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * Logout currently authenticated User
+     *
+     * @return RedirectResponse
+     * @throws \Throwable
+     */
+    public function logout(): RedirectResponse
+    {
+        $user = Auth::user();
+        throw_if(!$user, AuthenticationException::class);
+        $logout_url = config('shibboleth.oidc.logout_url');
+        $response = $this->getHttpClient()->get($logout_url, [
+            RequestOptions::HEADERS => ['Authorization' => 'Bearer '.$user->token],
+        ]);
+
+        if($response->getStatusCode() === 200){
+            Auth::logout();
+            Session::flush();
+            return new RedirectResponse(config('shibboleth.oidc.logout_url'));
+        }
+
+        throw new \Exception("Could not Logout User!");
     }
 }
