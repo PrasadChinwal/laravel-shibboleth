@@ -4,11 +4,11 @@ This package extends the Laravel's first-party package socialite to authenticate
 
 ## Usage:
 - Install the package:
-```composer require chinwalprasad/shibboleth```
+```composer require chinwalprasad/laravel-shibboleth```
 - Optional: Add Service provider to `config/app.php` file.
 ```prasadchinwal/shibboleth/ShibbolethServiceProvider::class```
 - Publish the config:
-```php artisan vendor:publish --tag=shib```
+```php artisan vendor:publish --tag=shib-config```
 
 #### Using SAML authentication 
 - Configure Routes
