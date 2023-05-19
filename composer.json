@@ -41,7 +41,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "PrasadChinwal\\Shibboleth\\ShibbolethServiceProvider"
+              "ShibbolethAppServiceProvider"
             ]
         }
     },

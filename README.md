@@ -1,17 +1,38 @@
-# UIS ITS Laravel Shibboleth
+# Laravel Shibboleth
 
 This package extends the Laravel's first-party package socialite to authenticate and authorize using Shibboleth.
 
 ## Usage:
 - Install the package:
-```composer require chinwalprasad/laravel-shibboleth```
+```composer require prasadchinwal/laravel-shibboleth```
 - Optional: Add Service provider to `config/app.php` file.
 ```prasadchinwal/shibboleth/ShibbolethServiceProvider::class```
-- Publish the config:
-``` php artisan vendor:publish --tag=shib-config```
-- Publish the migration:
-``` php artisan vendor:publish --tag=shib-migrations```
+- Install the package:
+``` php artisan shibboleth:install```
 - Set environment variables in .env file (Check the `config/shibboleth.php` file)
+
+#### Migrate database
+Run `php artisan migrate`
+
+> Note:
+> 
+> For Authorization set `APP_AD_AUTHORIZE_GROUP` in the .env file.
+> 
+> You can check user is admin using gates or directly using user model. ex:
+> 
+> ```php
+> In AuthServiceProvider:
+> Gate::define('admin', function (User $user) {
+>    return $user->hasRole('admin');
+> });
+> 
+> To check if user is admin you can either use:
+> User::find()->hasRole
+> 
+> OR
+> 
+> Gate::allows('admin')
+> ```
 
 #### Using SAML authentication 
 - Set the SAML environment variables
@@ -38,11 +59,6 @@ Route::get('/logout', [AuthHandler::class, 'logout'])
 #### Token Introspection
 For token introspection using OIDC add the following middleware to the `app/Http/Kernel.php` file:
 
-Under `web` property:
-```php
-\PrasadChinwal\Shibboleth\Http\Middleware\Introspect::class,
-```
-
 Under `alias` property:
 ```php
 'introspect' => \PrasadChinwal\Shibboleth\Http\Middleware\Introspect::class,
@@ -56,4 +72,4 @@ Route::middleware(['introspect'])->get('/introspect', 'Controller@index')
 
 ## Issues and Concerns
 Please open an issue on the GitHub repository with detailed description and logs (if available).
-> In case of security concerns please write an email to [UIS ITS](uisappdevdl@uis.edu). 
+> In case of security concerns please write an email to [PrasadChinwal](prasadchinwal5@gmail.com). 

@@ -25,17 +25,6 @@ class ShibbolethServiceProvider extends SocialiteServiceProvider
         $this->publishes([
             __DIR__. '/../migrations' => database_path('migrations')
         ], 'shib-migrations');
-
-//        $router = $this->app['router'];
-//        $router->pushMiddlewareToGroup(
-//            'web',
-//            \PrasadChinwal\Shibboleth\Http\Middleware\Introspect::class
-//        );
-//
-//        $router->aliasMiddleware(
-//            'introspect',
-//            \PrasadChinwal\Shibboleth\Http\Middleware\Introspect::class
-//        );
     }
 
     /**

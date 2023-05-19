@@ -125,14 +125,6 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     }
 
     /**
-     * @return \Laravel\Socialite\Contracts\User|User|null
-     */
-    public function user()
-    {
-        return parent::user();
-    }
-
-    /**
      * @return User
      */
     protected function mapUserToObject(array $user)

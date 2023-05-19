@@ -78,6 +78,17 @@ class OidcProviderStub extends AbstractProvider
     }
 
     /**
+     * AD group authorization
+     * @return bool
+     */
+    public function belongsToGroup(): bool
+    {
+        $authorizeGroup = config('shibboleth.authorization');
+        if(!$authorizeGroup) return false;
+        return in_array($authorizeGroup, $this->user->groups);
+    }
+
+    /**
      * Get a fresh instance of the Guzzle HTTP client.
      *
      * @return \GuzzleHttp\Client|\Mockery\MockInterface
