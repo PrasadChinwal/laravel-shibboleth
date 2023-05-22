@@ -2,8 +2,6 @@
 
 namespace PrasadChinwal\Shibboleth;
 
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\SocialiteServiceProvider;
 use PrasadChinwal\Shibboleth\Console\ShibbolethInstall;
 
@@ -18,12 +16,12 @@ class ShibbolethServiceProvider extends SocialiteServiceProvider
             __DIR__ . '/../config/shibboleth.php' => config_path('shibboleth.php'),
         ], 'shib-config');
 
-        $this->loadRoutesFrom(__DIR__ . '/routes/routes.php');
+        $this->loadRoutes();
 
         $this->loadMigrationsFrom(__DIR__ . '/../migrations');
 
         $this->publishes([
-            __DIR__. '/../migrations' => database_path('migrations')
+            __DIR__ . '/../migrations' => database_path('migrations')
         ], 'shib-migrations');
     }
 
@@ -40,6 +38,15 @@ class ShibbolethServiceProvider extends SocialiteServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(ShibbolethInstall::class);
         }
+    }
+
+    /**
+     * Register routes required for authentication and introspection
+     * @return void
+     */
+    protected function loadRoutes(): void
+    {
+        $this->loadRoutesFrom(realpath(__DIR__ . '/routes/routes.php'));
     }
 
 }

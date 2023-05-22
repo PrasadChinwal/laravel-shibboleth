@@ -4,7 +4,6 @@ namespace PrasadChinwal\Shibboleth\Actions;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Laravel\Socialite\Facades\Socialite;
 use Spatie\Permission\Models\Role;
 
@@ -12,10 +11,18 @@ class AuthHandler
 {
 
     /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function login(): \Illuminate\Http\RedirectResponse
+    {
+        return Socialite::driver(config('shibboleth.type'))->redirect();
+    }
+
+    /**
      * Handle authenticated User
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function login()
+    public function callback()
     {
         $socialiteUser = Socialite::driver(config('shibboleth.type'))->user();
         $user = User::updateOrCreate([

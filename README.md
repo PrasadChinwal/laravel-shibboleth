@@ -45,16 +45,31 @@ Run `php artisan migrate`
 #### Set up authentication routes
 set the authentication routes in `routes/web.php` files
 ```php
-Route::get('/login', function () {
-    return Socialite::driver(config('shibboleth.type'))->redirect();
-})->name('login');
+use PrasadChinwal\Shibboleth\Actions\AuthHandler;
+Route::group([
+    'as' => 'shib.',
+], function () {
+    Route::name('login')->get('login', [AuthHandler::class, 'login']);
 
-Route::get('/auth/callback', [AuthHandler::class, 'login'])
-    ->name('shib.callback');
+    Route::name('callback')->get('/auth/callback', [AuthHandler::class, 'callback']);
 
-Route::get('/logout', [AuthHandler::class, 'logout'])
-    ->name('logout');
+    Route::name('logout')->get('/logout', [AuthHandler::class, 'logout']);
+});
 ```
+
+#### Authorization using AD-Groups
+- Define the ad group name in the .env file
+- Set up the name of the group in `config/shibboleth.php` file under the `authorization` property
+  `'authorization' => env('APP_AD_AUTHORIZE_GROUP', null)`
+- In your `app/AuthServiceProvider.php` file you can now assign Gates or check if user is admin anywhere in the application using the below logic:
+  ```php
+    # In AuthServiceProvider
+    Gate::define('admin', function (User $user) {
+        return $user->hasRole('admin');
+    });
+    # OR
+    $user->hasRole('admin');
+  ```
 
 #### Token Introspection
 For token introspection using OIDC add the following middleware to the `app/Http/Kernel.php` file:
