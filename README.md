@@ -88,6 +88,13 @@ Now you can use the middleware on your protected route as such:
 Route::middleware(['introspect'])->get('/introspect', 'Controller@index')
 ->name('introspect');
 ```
+Note: Getting the user from token
+ 
+You can get the user associated with token by:
+```php
+$user = (new Introspect)->getUserByToken($request->bearerToken());
+dd($user);
+```
 
 ## Issues and Concerns
 Please open an issue on the GitHub repository with detailed description and logs (if available).
