@@ -42,13 +42,15 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
 
     /**
      * Set the scopes
+     *
      * @return array
      */
     public function getScopes()
     {
-        if(empty(config('shibboleth.oidc.scopes'))) {
-            throw new \ValueError("Scopes not set in config file");
+        if (empty(config('shibboleth.oidc.scopes'))) {
+            throw new \ValueError('Scopes not set in config file');
         }
+
         return array_unique((array) config('shibboleth.oidc.scopes'));
     }
 
@@ -125,14 +127,6 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     }
 
     /**
-     * @return \Laravel\Socialite\Contracts\User|User|null
-     */
-    public function user()
-    {
-        return parent::user();
-    }
-
-    /**
      * @return User
      */
     protected function mapUserToObject(array $user)
@@ -142,29 +136,30 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
             'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
-            'name' => $user['given_name'].' '. $user['family_name'],
+            'name' => $user['given_name'].' '.$user['family_name'],
             'email' => $user['email'],
             'password' => Hash::make($user['uisedu_uin'].now()),
-            'groups' => $user['uisedu_is_member_of']
+            'groups' => $user['uisedu_is_member_of'],
         ]);
     }
 
     /**
      * Introspect the user token
-     * @param $token
+     *
      * @return array|mixed
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function introspect($token): mixed
     {
         $response = $this->getHttpClient()->post(
             $this->getIntrospectUrl(), [
-            RequestOptions::FORM_PARAMS => [
-                'token' => $token,
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret
-            ],
-        ]);
+                RequestOptions::FORM_PARAMS => [
+                    'token' => $token,
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                ],
+            ]);
 
         return json_decode($response->getBody(), true);
     }
@@ -172,24 +167,24 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     /**
      * Logout currently authenticated User
      *
-     * @return RedirectResponse
      * @throws \Throwable
      */
     public function logout(): RedirectResponse
     {
         $user = Auth::user();
-        throw_if(!$user, AuthenticationException::class);
+        throw_if(! $user, AuthenticationException::class);
         $logout_url = config('shibboleth.oidc.logout_url');
         $response = $this->getHttpClient()->get($logout_url, [
             RequestOptions::HEADERS => ['Authorization' => 'Bearer '.$user->token],
         ]);
 
-        if($response->getStatusCode() === 200){
+        if ($response->getStatusCode() === 200) {
             Auth::logout();
             Session::flush();
+
             return new RedirectResponse(config('shibboleth.oidc.logout_url'));
         }
 
-        throw new \Exception("Could not Logout User!");
+        throw new \Exception('Could not Logout User!');
     }
 }

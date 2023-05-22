@@ -26,10 +26,12 @@ return [
     ],
 
     'saml' => [
-        'auth_url' => env("SAML_LOGIN_URL"),
+        'auth_url' => env('SAML_LOGIN_URL'),
         'logout_url' => env('SAML_LOGOUT_URL'),
         'redirect' => env('APP_URL').'/auth/callback',
         'entitlement' => 'isMemberOf',
-        'user' => ['sn', 'givenName', 'name', 'mail', 'iTrustUIN']
-    ]
+        'user' => ['sn', 'givenName', 'name', 'mail', 'iTrustUIN'],
+    ],
+
+    'authorization' => env('APP_AD_AUTHORIZE_GROUP', null),
 ];

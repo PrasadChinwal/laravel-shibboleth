@@ -1,15 +1,14 @@
 <?php
 
-
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthHandler
 {
-
     /**
      * Handle authenticated User
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function login()
@@ -26,9 +25,10 @@ class AuthHandler
             'email' => $user->email,
             'token' => $user->token,
             'remember_token' => $user->refreshToken,
-            'password' => $user->password
+            'password' => $user->password,
         ]);
         Auth::login($user);
+
         return redirect('/');
     }
 
