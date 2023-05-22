@@ -62,6 +62,7 @@ class OidcProviderStub extends AbstractProvider
             'given_name' => 'first',
             'family_name' => 'last',
             'email' => 'abc@xxx.org',
+            'groups' => ['test-group', 'app2', 'app3', 'app4']
         ];
     }
 
@@ -74,6 +75,7 @@ class OidcProviderStub extends AbstractProvider
             'last_name' => $user['family_name'],
             'name' => $user['given_name'].' '. $user['family_name'],
             'email' => $user['email'],
+            'groups' => $user['groups']
         ]);
     }
 

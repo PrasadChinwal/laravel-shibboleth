@@ -31,5 +31,7 @@ return [
         'redirect' => env('APP_URL').'/auth/callback',
         'entitlement' => 'isMemberOf',
         'user' => ['sn', 'givenName', 'name', 'mail', 'iTrustUIN']
-    ]
+    ],
+
+    'authorization' => env('APP_AD_AUTHORIZE_GROUP', null)
 ];
