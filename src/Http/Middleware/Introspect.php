@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class Introspect
@@ -32,7 +33,7 @@ class Introspect
             return $next($request);
         }
 
-        $introspectResponse = Socialite::driver(config('shibboleth.type'))
+        $introspectResponse = Socialite::driver('shib-oidc')
             ->introspect($request->bearerToken());
 
         if (! $introspectResponse['active']) {
@@ -40,6 +41,18 @@ class Introspect
         }
 
         return $next($request);
+    }
+
+    /**
+     * Return the user details from the token
+     *
+     * @param string $token
+     * @return array $user
+     */
+    public function getUserByToken(string $token): array
+    {
+        return Socialite::driver('shib-oidc')
+            ->getUserByToken($token);
     }
 
     /**
