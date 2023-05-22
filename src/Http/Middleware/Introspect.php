@@ -5,6 +5,7 @@ namespace PrasadChinwal\Shibboleth\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,19 +41,9 @@ class Introspect
             throw new \Exception('Invalid token');
         }
 
-        return $next($request);
-    }
+        Session::put('introspect.username', $introspectResponse['username']);
 
-    /**
-     * Return the user details from the token
-     *
-     * @param string $token
-     * @return array $user
-     */
-    public function getUserByToken(string $token): array
-    {
-        return Socialite::driver('shib-oidc')
-            ->getUserByToken($token);
+        return $next($request);
     }
 
     /**
