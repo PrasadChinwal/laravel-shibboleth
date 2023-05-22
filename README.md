@@ -46,21 +46,23 @@ Run `php artisan migrate`
 set the authentication routes in `routes/web.php` files
 ```php
 use PrasadChinwal\Shibboleth\Actions\AuthHandler;
-Route::group([
-    'as' => 'shib.',
-], function () {
-    Route::name('login')->get('login', [AuthHandler::class, 'login']);
-
-    Route::name('callback')->get('/auth/callback', [AuthHandler::class, 'callback']);
-
-    Route::name('logout')->get('/logout', [AuthHandler::class, 'logout']);
-});
+Route::name('login')->get('login', [AuthHandler::class, 'login']);
+Route::name('callback')->get('/auth/callback', [AuthHandler::class, 'callback']);
+Route::name('logout')->get('/logout', [AuthHandler::class, 'logout']);
 ```
 
-#### Authorization using AD-Groups
+#### Authorization
 - Define the ad group name in the .env file
 - Set up the name of the group in `config/shibboleth.php` file under the `authorization` property
   `'authorization' => env('APP_AD_AUTHORIZE_GROUP', null)`
+- Add the trait `HasRoles` to the `Users` model
+    ```php
+    use Spatie\Permission\Traits\HasRoles;
+    class User extends Authenticatable
+    {
+        use HasRoles;
+    }
+    ```
 - In your `app/AuthServiceProvider.php` file you can now assign Gates or check if user is admin anywhere in the application using the below logic:
   ```php
     # In AuthServiceProvider
@@ -70,6 +72,8 @@ Route::group([
     # OR
     $user->hasRole('admin');
   ```
+
+You can extend the roles and permissions functionality to add new roles or permissions using [Spatie Permission package](https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage)
 
 #### Token Introspection
 For token introspection using OIDC add the following middleware to the `app/Http/Kernel.php` file:
