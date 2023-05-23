@@ -57,7 +57,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     /**
      * {@inheritdoc}
      */
-    protected function getAuthUrl($state)
+    protected function getAuthUrl($state): string
     {
         if(empty(config('shibboleth.oidc.auth_url'))) {
             throw new \ValueError("auth url not set in config");
@@ -65,7 +65,12 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
         return $this->buildAuthUrlFromBase(config('shibboleth.oidc.auth_url'), $state);
     }
 
-    public function getAccessTokenResponse($code)
+    /**
+     * @param $code
+     * @return array|mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getAccessTokenResponse($code): mixed
     {
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
             RequestOptions::AUTH => [$this->clientId, $this->clientSecret],

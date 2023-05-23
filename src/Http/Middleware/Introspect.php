@@ -3,32 +3,33 @@
 namespace PrasadChinwal\Shibboleth\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
+use JsonException;
 use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\User;
 use Symfony\Component\HttpFoundation\Response;
 
 class Introspect
 {
     /**
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  ...$scopes
+     * @param Request $request
+     * @param \Closure(Request): (Response) $next
+     * @param string ...$scopes
      *
+     * @return Response
      * @throws \Throwable
      */
     public function handle(Request $request, Closure $next, ...$scopes): Response
     {
-        throw_if(
-            ! $request->hasHeader('Authorization'),
-            new \Exception('Authorization Header Not Found!')
-        );
+        if(! $request->hasHeader('Authorization')) {
+            return new JsonResponse(['message' => 'Authorization Header not found!'], 403);
+        }
 
-        throw_if(
-            empty($request->bearerToken()),
-            new \Exception('Bearer Token Not Found!')
-        );
+        if(empty($request->bearerToken())) {
+            return new JsonResponse(['message' => 'Token not set!'], 401);
+        }
 
         if ($this->checkCache($request->bearerToken())) {
             return $next($request);
@@ -38,7 +39,7 @@ class Introspect
             ->introspect($request->bearerToken());
 
         if (! $introspectResponse['active']) {
-            throw new \Exception('Invalid token');
+            return new JsonResponse(['message' => 'Invalid Token!'], 401);
         }
 
         Session::put('introspect.username', $introspectResponse['username']);

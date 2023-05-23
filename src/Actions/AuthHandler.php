@@ -44,7 +44,7 @@ class AuthHandler
 
         Auth::login($user);
 
-        return redirect('/');
+        return redirect()->to($this->getRedirectUrl());
     }
 
     /**
@@ -53,5 +53,15 @@ class AuthHandler
     public function logout()
     {
         return Socialite::driver(config('shibboleth.type'))->logout();
+    }
+
+    /**
+     * Get redirect url after successful authentication.
+     * @return string
+     */
+    protected function getRedirectUrl(): string
+    {
+        if(empty(config('shibboleth.redirect_to'))) return "/";
+        return config('shibboleth.redirect_to');
     }
 }

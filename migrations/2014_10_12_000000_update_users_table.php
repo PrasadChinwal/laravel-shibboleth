@@ -26,6 +26,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns('users', ['netid', 'first_name', 'last_name', 'uin', 'token', 'remember_token']);
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(array_merge([
+                'netid',
+                'first_name',
+                'last_name',
+                'uin',
+                'token',
+            ],[]));
+        });
     }
 };
