@@ -1,20 +1,18 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Contracts\Factory;
 use Laravel\Socialite\Two\User;
 use PrasadChinwal\Shibboleth\Test\stubs\OidcProviderStub;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->codeVerifier = null;
 });
 
-test('can generate proper url for shib oidc driver', function() {
+test('can generate proper url for shib oidc driver', function () {
     $request = Request::create('foo');
     $request->setLaravelSession($session = Mockery::mock(Session::class));
 
@@ -26,6 +24,7 @@ test('can generate proper url for shib oidc driver', function() {
             return true;
         } elseif ($name === 'code_verifier') {
             $this->codeVerifier = $value;
+
             return true;
         }
 
@@ -51,7 +50,7 @@ test('can generate proper url for shib oidc driver', function() {
     $this->assertSame('http://auth.url?client_id=client_id&redirect_uri=redirect&scope=openid+profile+email+phone+address+offline_access&response_type=code&state='.$state.'&code_challenge='.$codeChallenge.'&code_challenge_method=S256', $response->getTargetUrl());
 });
 
-test('can set appropriate scopes for oidc authentication', function(){
+test('can set appropriate scopes for oidc authentication', function () {
     $request = Request::create('foo');
     $request->setLaravelSession($session = Mockery::mock(Session::class));
 
@@ -63,6 +62,7 @@ test('can set appropriate scopes for oidc authentication', function(){
             return true;
         } elseif ($name === 'code_verifier') {
             $this->codeVerifier = $value;
+
             return true;
         }
 
@@ -89,8 +89,8 @@ test('successful authentication returns an instance of User', function () {
     $user = loginUser();
     $this->assertInstanceOf(User::class, $user);
     $this->assertSame('123456789', $user->uin);
-    $this->assertSame('first last', $user->first_name .' '. $user->last_name);
-    $this->assertSame($user->name, $user->first_name .' '. $user->last_name);
+    $this->assertSame('first last', $user->first_name.' '.$user->last_name);
+    $this->assertSame($user->name, $user->first_name.' '.$user->last_name);
     $this->assertSame('abc', $user->netid);
     $this->assertSame('abc@xxx.org', $user->netid.'@xxx.org');
     $this->assertSame('access_token', $user->token);
@@ -120,5 +120,6 @@ function loginUser(): User
         'headers' => ['Accept' => 'application/json'], 'form_params' => ['grant_type' => 'authorization_code', 'client_id' => 'client_id', 'client_secret' => 'client_secret', 'code' => 'code', 'redirect_uri' => 'redirect_uri', 'code_verifier' => $codeVerifier],
     ])->andReturns($response = Mockery::mock(stdClass::class));
     $response->expects('getBody')->andReturns('{ "access_token" : "access_token", "refresh_token" : "refresh_token", "expires_in" : 3600 }');
+
     return $provider->user();
 }

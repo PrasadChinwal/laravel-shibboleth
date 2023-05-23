@@ -34,6 +34,7 @@ class OidcProviderStub extends AbstractProvider
 
     /**
      * Set the scopes
+     *
      * @return array
      */
     public function getScopes()
@@ -41,7 +42,8 @@ class OidcProviderStub extends AbstractProvider
         if (empty(config('shibboleth.oidc.scopes'))) {
             throw new \ValueError('Scopes not set in config file');
         }
-        return array_unique((array)config('shibboleth.oidc.scopes'));
+
+        return array_unique((array) config('shibboleth.oidc.scopes'));
     }
 
     protected function getAuthUrl($state)
@@ -62,7 +64,7 @@ class OidcProviderStub extends AbstractProvider
             'given_name' => 'first',
             'family_name' => 'last',
             'email' => 'abc@xxx.org',
-            'groups' => ['test-group', 'app2', 'app3', 'app4']
+            'groups' => ['test-group', 'app2', 'app3', 'app4'],
         ];
     }
 
@@ -73,9 +75,9 @@ class OidcProviderStub extends AbstractProvider
             'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
-            'name' => $user['given_name'].' '. $user['family_name'],
+            'name' => $user['given_name'].' '.$user['family_name'],
             'email' => $user['email'],
-            'groups' => $user['groups']
+            'groups' => $user['groups'],
         ]);
     }
 
@@ -96,21 +98,21 @@ class OidcProviderStub extends AbstractProvider
     /**
      * Logout currently authenticated User
      *
-     * @return RedirectResponse
      * @throws \Throwable
      */
     public function logout(): RedirectResponse
     {
         $user = Auth::user();
-        throw_if(!$user, AuthenticationException::class);
+        throw_if(! $user, AuthenticationException::class);
         $logout_url = config('shibboleth.oidc.logout_url');
         $response = $this->getHttpClient()->get($logout_url, [
-            RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $user->token],
+            RequestOptions::HEADERS => ['Authorization' => 'Bearer '.$user->token],
         ]);
 
         if ($response->getStatusCode() === 200) {
             Auth::logout();
             Session::flush();
+
             return new RedirectResponse(config('shibboleth.oidc.logout_url'));
         }
 

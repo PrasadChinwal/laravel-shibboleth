@@ -42,25 +42,35 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
 
     /**
      * Set the scopes
+     *
      * @return array
      */
     public function getScopes()
     {
-        if(empty(config('shibboleth.oidc.scopes'))) {
-            throw new \ValueError("Scopes not set in config file");
+        if (empty(config('shibboleth.oidc.scopes'))) {
+            throw new \ValueError('Scopes not set in config file');
         }
+
         return array_unique((array) config('shibboleth.oidc.scopes'));
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getAuthUrl($state)
+    protected function getAuthUrl($state): string
     {
+        if(empty(config('shibboleth.oidc.auth_url'))) {
+            throw new \ValueError("auth url not set in config");
+        }
         return $this->buildAuthUrlFromBase(config('shibboleth.oidc.auth_url'), $state);
     }
 
-    public function getAccessTokenResponse($code)
+    /**
+     * @param $code
+     * @return array|mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getAccessTokenResponse($code): mixed
     {
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
             RequestOptions::AUTH => [$this->clientId, $this->clientSecret],
@@ -75,6 +85,9 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getTokenUrl()
     {
+        if (empty(config('shibboleth.oidc.token_url'))) {
+            throw new \ValueError('token url not set in config');
+        }
         return config('shibboleth.oidc.token_url');
     }
 
@@ -85,6 +98,9 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getUserUrl()
     {
+        if (empty(config('shibboleth.oidc.user_url'))) {
+            throw new \ValueError('User profile url not set in config');
+        }
         return config('shibboleth.oidc.user_url');
     }
 
@@ -95,6 +111,9 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getIntrospectUrl()
     {
+        if (empty(config('shibboleth.oidc.introspect_url'))) {
+            throw new \ValueError('Introspect url not set in config');
+        }
         return config('shibboleth.oidc.introspect_url');
     }
 
@@ -134,29 +153,30 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
             'netid' => $user['preferred_username'],
             'first_name' => $user['given_name'],
             'last_name' => $user['family_name'],
-            'name' => $user['given_name'].' '. $user['family_name'],
+            'name' => $user['given_name'].' '.$user['family_name'],
             'email' => $user['email'],
             'password' => Hash::make($user['uisedu_uin'].now()),
-            'groups' => $user['uisedu_is_member_of']
+            'groups' => $user['uisedu_is_member_of'],
         ]);
     }
 
     /**
      * Introspect the user token
-     * @param $token
+     *
      * @return array|mixed
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function introspect($token): mixed
     {
         $response = $this->getHttpClient()->post(
             $this->getIntrospectUrl(), [
-            RequestOptions::FORM_PARAMS => [
-                'token' => $token,
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret
-            ],
-        ]);
+                RequestOptions::FORM_PARAMS => [
+                    'token' => $token,
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                ],
+            ]);
 
         return json_decode($response->getBody(), true);
     }
@@ -164,24 +184,24 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     /**
      * Logout currently authenticated User
      *
-     * @return RedirectResponse
      * @throws \Throwable
      */
     public function logout(): RedirectResponse
     {
         $user = Auth::user();
-        throw_if(!$user, AuthenticationException::class);
+        throw_if(! $user, AuthenticationException::class);
         $logout_url = config('shibboleth.oidc.logout_url');
         $response = $this->getHttpClient()->get($logout_url, [
             RequestOptions::HEADERS => ['Authorization' => 'Bearer '.$user->token],
         ]);
 
-        if($response->getStatusCode() === 200){
+        if ($response->getStatusCode() === 200) {
             Auth::logout();
             Session::flush();
+
             return new RedirectResponse(config('shibboleth.oidc.logout_url'));
         }
 
-        throw new \Exception("Could not Logout User!");
+        throw new \Exception('Could not Logout User!');
     }
 }

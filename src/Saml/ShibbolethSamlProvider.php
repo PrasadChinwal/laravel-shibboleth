@@ -13,10 +13,6 @@ use Laravel\Socialite\Two\User;
 
 final class ShibbolethSamlProvider extends AbstractSamlProvider implements ProviderInterface
 {
-
-    /**
-     * @return string
-     */
     public function getAuthUrl(): string
     {
         return \str('https://')
@@ -29,48 +25,37 @@ final class ShibbolethSamlProvider extends AbstractSamlProvider implements Provi
             ->value();
     }
 
-    /**
-     * @return RedirectResponse
-     */
     public function redirect(): RedirectResponse
     {
         return new RedirectResponse($this->getAuthUrl());
     }
 
-
     /**
      * Return a Socialite User object for the authenticated user
-     *
-     * @return User
      */
     public function user(): User
     {
         $this->attributes = Arr::only($_SERVER, config('shibboleth.saml.user'));
+
         return $this->mapUserToObject($this->attributes);
     }
 
-    /**
-     * @param array $user
-     * @return User
-     */
     public function mapUserToObject(array $user): User
     {
         return (new User)->setRaw($user)->map([
             'uin' => $user['iTrustUIN'],
-            'name' => $user['givenName']." ".$user['sn'],
+            'name' => $user['givenName'].' '.$user['sn'],
             'first_name' => $user['givenName'],
             'last_name' => $user['sn'],
             'email' => $user['mail'],
             'netid' => $user['cn'],
             'password' => Hash::make($user['iTrustUIN'].now()),
-            'groups' => $user['isMemberOf']
+            'groups' => $user['isMemberOf'],
         ]);
     }
 
     /**
      * Logout currently authenticated User
-     *
-     * @return RedirectResponse
      */
     public function logout(): RedirectResponse
     {
@@ -79,5 +64,4 @@ final class ShibbolethSamlProvider extends AbstractSamlProvider implements Provi
 
         return new RedirectResponse(config('shibboleth.oidc.logout_url'));
     }
-
 }

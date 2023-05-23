@@ -13,15 +13,15 @@ class ShibbolethServiceProvider extends SocialiteServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/shibboleth.php' => config_path('shibboleth.php'),
+            __DIR__.'/../config/shibboleth.php' => config_path('shibboleth.php'),
         ], 'shib-config');
 
         $this->loadRoutes();
 
-        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../migrations');
 
         $this->publishes([
-            __DIR__ . '/../migrations' => database_path('migrations')
+            __DIR__.'/../migrations' => database_path('migrations'),
         ], 'shib-migrations');
     }
 
@@ -42,11 +42,9 @@ class ShibbolethServiceProvider extends SocialiteServiceProvider
 
     /**
      * Register routes required for authentication and introspection
-     * @return void
      */
     protected function loadRoutes(): void
     {
-        $this->loadRoutesFrom(realpath(__DIR__ . '/routes/routes.php'));
+        $this->loadRoutesFrom(realpath(__DIR__.'/routes/routes.php'));
     }
-
 }

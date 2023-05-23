@@ -9,10 +9,6 @@ use Spatie\Permission\Models\Role;
 
 class AuthHandler
 {
-
-    /**
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function login(): \Illuminate\Http\RedirectResponse
     {
         return Socialite::driver(config('shibboleth.type'))->redirect();
@@ -20,6 +16,7 @@ class AuthHandler
 
     /**
      * Handle authenticated User
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function callback()
@@ -36,17 +33,18 @@ class AuthHandler
             'email' => $socialiteUser->email,
             'token' => $socialiteUser->token,
             'remember_token' => $socialiteUser->refreshToken,
-            'password' => $socialiteUser->password
+            'password' => $socialiteUser->password,
         ]);
 
         $role = Role::firstOrCreate(['name' => 'admin']);
 
-        if(in_array(config('shibboleth.authorization'), $socialiteUser->groups)) {
+        if (in_array(config('shibboleth.authorization'), $socialiteUser->groups)) {
             $user->assignRole($role);
         }
 
         Auth::login($user);
-        return redirect('/');
+
+        return redirect()->to($this->getRedirectUrl());
     }
 
     /**
@@ -55,5 +53,15 @@ class AuthHandler
     public function logout()
     {
         return Socialite::driver(config('shibboleth.type'))->logout();
+    }
+
+    /**
+     * Get redirect url after successful authentication.
+     * @return string
+     */
+    protected function getRedirectUrl(): string
+    {
+        if(empty(config('shibboleth.redirect_to'))) return "/";
+        return config('shibboleth.redirect_to');
     }
 }

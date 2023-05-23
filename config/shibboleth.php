@@ -2,17 +2,20 @@
 
 return [
     /*
-     * Specify the type of authentication and authorization required.
+     * Configure authentication and authorization type.
      *
      * Supported: shib-saml, shib-oidc
      */
-
     'type' => 'shib-oidc',
 
     /*
-     * Set config required for Shibboleth OIDC authentication and authorization.
+     * Configure route to redirect to after authentication.
      */
+    'redirect_to' => '/',
 
+    /*
+     * Configure Shibboleth OIDC authentication.
+     */
     'oidc' => [
         'client_id' => env('OIDC_CLIENT_ID'),
         'client_secret' => env('OIDC_CLIENT_SECRET'),
@@ -25,13 +28,19 @@ return [
         'scopes' => ['openid', 'profile', 'email', 'phone', 'address', 'offline_access'],
     ],
 
+    /*
+     * Configure Shibboleth OIDC authentication.
+     */
     'saml' => [
-        'auth_url' => env("SAML_LOGIN_URL"),
+        'auth_url' => env('SAML_LOGIN_URL'),
         'logout_url' => env('SAML_LOGOUT_URL'),
         'redirect' => env('APP_URL').'/auth/callback',
         'entitlement' => 'isMemberOf',
-        'user' => ['sn', 'givenName', 'name', 'mail', 'iTrustUIN']
+        'user' => ['sn', 'givenName', 'name', 'mail', 'iTrustUIN'],
     ],
 
-    'authorization' => env('APP_AD_AUTHORIZE_GROUP', null)
+    /*
+     * Configure the authorization AD group
+     */
+    'authorization' => env('APP_AD_AUTHORIZE_GROUP', null),
 ];

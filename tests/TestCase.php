@@ -8,16 +8,12 @@ use PrasadChinwal\Shibboleth\ShibbolethServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
-    /**
-     * @return void
-     */
     protected function setUp(): void
     {
         parent::setUp();
     }
 
     /**
-     * @param $app
      * @return string[]
      */
     protected function getPackageProviders($app): array
@@ -28,7 +24,6 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -52,7 +47,6 @@ abstract class TestCase extends Orchestra
         $app['config']->set('shibboleth.saml.entitlement', 'isMemberOf');
         $app['config']->set('shibboleth.saml.user', ['sn', 'givenName', 'name', 'mail', 'iTrustUIN']);
 
-
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
             'database' => ':memory:',
@@ -64,11 +58,8 @@ abstract class TestCase extends Orchestra
     {
     }
 
-    /**
-     * @return void
-     */
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../migrations');
     }
 }

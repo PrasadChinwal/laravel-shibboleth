@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Contracts\Factory;
 use PrasadChinwal\Shibboleth\Oidc\ShibbolethOidcProvider;
 use PrasadChinwal\Shibboleth\Saml\ShibbolethSamlProvider;

@@ -41,7 +41,7 @@ class ShibbolethInstall extends Command
 
         // publish migration file
         $this->callSilent('vendor:publish', ['--tag' => 'shib-migrations', '--force' => true]);
-        $this->info("Successfully published shibboleth migrations to: ". database_path());
+        $this->info('Successfully published shibboleth migrations to: '.database_path());
         $this->newLine();
 
         $this->info('Please run your migrations using:');
