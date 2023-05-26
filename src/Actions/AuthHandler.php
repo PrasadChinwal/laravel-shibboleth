@@ -57,11 +57,13 @@ class AuthHandler
 
     /**
      * Get redirect url after successful authentication.
-     * @return string
      */
     protected function getRedirectUrl(): string
     {
-        if(empty(config('shibboleth.redirect_to'))) return "/";
+        if (empty(config('shibboleth.redirect_to'))) {
+            return '/';
+        }
+
         return config('shibboleth.redirect_to');
     }
 }

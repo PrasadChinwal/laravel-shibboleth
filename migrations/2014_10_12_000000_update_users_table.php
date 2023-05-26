@@ -33,7 +33,7 @@ return new class extends Migration
                 'last_name',
                 'uin',
                 'token',
-            ],[]));
+            ], []));
         });
     }
 };

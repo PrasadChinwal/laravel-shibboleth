@@ -7,27 +7,24 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
-use JsonException;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\Response;
 
 class Introspect
 {
     /**
-     * @param Request $request
      * @param \Closure(Request): (Response) $next
-     * @param string ...$scopes
+     * @param  string  ...$scopes
      *
-     * @return Response
      * @throws \Throwable
      */
     public function handle(Request $request, Closure $next, ...$scopes): Response
     {
-        if(! $request->hasHeader('Authorization')) {
+        if (! $request->hasHeader('Authorization')) {
             return new JsonResponse(['message' => 'Authorization Header not found!'], 403);
         }
 
-        if(empty($request->bearerToken())) {
+        if (empty($request->bearerToken())) {
             return new JsonResponse(['message' => 'Token not set!'], 401);
         }
 

@@ -59,15 +59,16 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      */
     protected function getAuthUrl($state): string
     {
-        if(empty(config('shibboleth.oidc.auth_url'))) {
-            throw new \ValueError("auth url not set in config");
+        if (empty(config('shibboleth.oidc.auth_url'))) {
+            throw new \ValueError('auth url not set in config');
         }
+
         return $this->buildAuthUrlFromBase(config('shibboleth.oidc.auth_url'), $state);
     }
 
     /**
-     * @param $code
      * @return array|mixed
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getAccessTokenResponse($code): mixed
@@ -88,6 +89,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
         if (empty(config('shibboleth.oidc.token_url'))) {
             throw new \ValueError('token url not set in config');
         }
+
         return config('shibboleth.oidc.token_url');
     }
 
@@ -101,6 +103,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
         if (empty(config('shibboleth.oidc.user_url'))) {
             throw new \ValueError('User profile url not set in config');
         }
+
         return config('shibboleth.oidc.user_url');
     }
 
@@ -114,6 +117,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
         if (empty(config('shibboleth.oidc.introspect_url'))) {
             throw new \ValueError('Introspect url not set in config');
         }
+
         return config('shibboleth.oidc.introspect_url');
     }
 
