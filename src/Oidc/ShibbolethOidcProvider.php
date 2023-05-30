@@ -2,6 +2,7 @@
 
 namespace PrasadChinwal\Shibboleth\Oidc;
 
+use Exception;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\RedirectResponse;
@@ -109,12 +110,12 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      *
      * @return string|null
      */
-    protected function getIntrospectUrl()
+    protected function getIntrospectUrl(): ?string
     {
-        if (empty(config('shibboleth.oidc.introspect_url'))) {
+        if (empty(config('shibboleth.introspect.introspect_url'))) {
             throw new \ValueError('Introspect url not set in config');
         }
-        return config('shibboleth.oidc.introspect_url');
+        return config('shibboleth.introspect.introspect_url');
     }
 
     /**
@@ -144,9 +145,10 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     }
 
     /**
+     * @param array $user
      * @return User
      */
-    protected function mapUserToObject(array $user)
+    protected function mapUserToObject(array $user): User
     {
         return (new User)->setRaw($user)->map([
             'uin' => $user['uisedu_uin'],
@@ -166,15 +168,19 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
      * @return array|mixed
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Throwable
      */
     public function introspect($token): mixed
     {
+        $clientId = config('shibboleth.introspect.client_id');
+        $clientSecret = config('shibboleth.introspect.client_secret');
+        throw_if(empty($clientId) || empty($clientSecret), new Exception("Introspect Client ID or Secret not set!"));
         $response = $this->getHttpClient()->post(
             $this->getIntrospectUrl(), [
                 RequestOptions::FORM_PARAMS => [
                     'token' => $token,
-                    'client_id' => $this->clientId,
-                    'client_secret' => $this->clientSecret,
+                    'client_id' => $clientId,
+                    'client_secret' => $clientSecret,
                 ],
             ]);
 
