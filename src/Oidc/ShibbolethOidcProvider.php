@@ -13,7 +13,7 @@ use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
 use Laravel\Socialite\Two\User;
 
-class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterface
+final class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterface
 {
     /**
      * The separating character for the requested scopes.
@@ -174,7 +174,7 @@ class ShibbolethOidcProvider extends AbstractProvider implements ProviderInterfa
     {
         $clientId = config('shibboleth.introspect.client_id');
         $clientSecret = config('shibboleth.introspect.client_secret');
-        throw_if(empty($clientId) || empty($clientSecret), new Exception("Introspect Client ID or Secret not set!"));
+        throw_if(empty($clientId), new Exception("Introspect Client ID not set!"));
         $response = $this->getHttpClient()->post(
             $this->getIntrospectUrl(), [
                 RequestOptions::FORM_PARAMS => [
