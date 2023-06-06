@@ -18,6 +18,7 @@ return [
      */
     'oidc' => [
         'client_id' => env('OIDC_CLIENT_ID'),
+        'client_secret' => "",
         'auth_url' => env('OIDC_AUTH_URL'),
         'token_url' => env('OIDC_TOKEN_URL'),
         'user_url' => env('OIDC_USER_URL'),
@@ -30,7 +31,7 @@ return [
      * Configure token introspection params.
      */
     'introspect' => [
-        'introspect_url' => env('OIDC_INTROSPECT_URL'),
+        'introspect_url' => env('INTROSPECT_URL'),
         'client_id' => env('INTROSPECT_CLIENT_ID', null),
         'client_secret' => env('INTROSPECT_CLIENT_SECRET', null),
     ],
@@ -56,7 +57,7 @@ return [
      */
     'mapping' => [
         'maps_user_attributes' => true,
-        'attributes' => ['netid', 'uin', 'name', 'first_name', 'last_name', 'email', 'groups']
+        'attributes' => ['netid', 'uin', 'name', 'first_name', 'last_name', 'email', 'groups'],
     ],
 
 ];

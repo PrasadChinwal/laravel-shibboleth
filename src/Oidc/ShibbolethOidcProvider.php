@@ -60,15 +60,16 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
      */
     protected function getAuthUrl($state): string
     {
-        if(empty(config('shibboleth.oidc.auth_url'))) {
-            throw new \ValueError("auth url not set in config");
+        if (empty(config('shibboleth.oidc.auth_url'))) {
+            throw new \ValueError('auth url not set in config');
         }
+
         return $this->buildAuthUrlFromBase(config('shibboleth.oidc.auth_url'), $state);
     }
 
     /**
-     * @param $code
      * @return array|mixed
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getAccessTokenResponse($code): mixed
@@ -89,6 +90,7 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
         if (empty(config('shibboleth.oidc.token_url'))) {
             throw new \ValueError('token url not set in config');
         }
+
         return config('shibboleth.oidc.token_url');
     }
 
@@ -102,19 +104,19 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
         if (empty(config('shibboleth.oidc.user_url'))) {
             throw new \ValueError('User profile url not set in config');
         }
+
         return config('shibboleth.oidc.user_url');
     }
 
     /**
      * Get the url to introspect user token
-     *
-     * @return string|null
      */
     protected function getIntrospectUrl(): ?string
     {
         if (empty(config('shibboleth.introspect.introspect_url'))) {
             throw new \ValueError('Introspect url not set in config');
         }
+
         return config('shibboleth.introspect.introspect_url');
     }
 
@@ -133,7 +135,7 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
     /**
      * {@inheritdoc}
      */
-    protected function getCodeFields($state = null)
+    protected function getCodeFields($state = null): array
     {
         $fields = parent::getCodeFields($state);
 
@@ -144,10 +146,6 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
         return $fields;
     }
 
-    /**
-     * @param array $user
-     * @return User
-     */
     protected function mapUserToObject(array $user): User
     {
         return (new User)->setRaw($user)->map([
@@ -174,7 +172,7 @@ final class ShibbolethOidcProvider extends AbstractProvider implements ProviderI
     {
         $clientId = config('shibboleth.introspect.client_id');
         $clientSecret = config('shibboleth.introspect.client_secret');
-        throw_if(empty($clientId), new Exception("Introspect Client ID not set!"));
+        throw_if(empty($clientId), new Exception('Introspect Client ID not set!'));
         $response = $this->getHttpClient()->post(
             $this->getIntrospectUrl(), [
                 RequestOptions::FORM_PARAMS => [
