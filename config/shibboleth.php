@@ -18,7 +18,7 @@ return [
      */
     'oidc' => [
         'client_id' => env('OIDC_CLIENT_ID'),
-        'client_secret' => "",
+        'client_secret' => '',
         'auth_url' => env('OIDC_AUTH_URL'),
         'token_url' => env('OIDC_TOKEN_URL'),
         'user_url' => env('OIDC_USER_URL'),
